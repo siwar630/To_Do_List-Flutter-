@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SignUp extends StatefulWidget {
@@ -10,6 +11,7 @@ class _SignUpState extends State<SignUp> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -61,18 +63,48 @@ class _SignUpState extends State<SignUp> {
               ),
               SizedBox(height: 16.0),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     String name = _nameController.text;
                     String email = _emailController.text;
                     String password = _passwordController.text;
-                    // Perform sign-up logic with the entered data
-                    // Add your sign-up logic here
+
+                    try {
+                      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+                        email: email,
+                        password: password,
+                      );
+
+                      // Additional logic after successful sign-up if needed
+                    } catch (e) {
+                      // Handle sign-up errors here
+                      print('Sign-up error: $e');
+                    }
                   }
                 },
-                child: Text('Create'),
+                child: Text(
+                  'Create',
+                  style: TextStyle(fontSize: 16, color: Colors.white),
+                ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.pink, // Modify the color of the "Create" button to pink here
+                  backgroundColor: Colors.pink,
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, '/signin');
+                },
+                child: RichText(
+                  text: TextSpan(
+                    text: "Already have an account? ",
+                    style: TextStyle(fontSize: 16, color: Colors.black),
+                    children: [
+                      TextSpan(
+                        text: 'Sign In',
+                        style: TextStyle(fontSize: 16, color: Colors.greenAccent[400], fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

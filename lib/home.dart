@@ -6,7 +6,7 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Welcome'),
+        title: Text('Home'),
         centerTitle: true,
         backgroundColor: Colors.pink,
       ),
@@ -17,8 +17,8 @@ class Home extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                '',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                'Organize Your Day',
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 40),
               Image.asset(
@@ -38,7 +38,7 @@ class Home extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   child: Text(
                     'Login',
-                    style: TextStyle(fontSize: 18),
+                    style: TextStyle(fontSize: 16, color: Colors.white),
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
@@ -49,13 +49,21 @@ class Home extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 20),
-              TextButton(
-                onPressed: () {
+              GestureDetector(
+                onTap: () {
                   Navigator.pushNamed(context, '/signup');
                 },
-                child: Text(
-                  'Create an account',
-                  style: TextStyle(fontSize: 16, color: Colors.purple),
+                child: RichText(
+                  text: TextSpan(
+                    text: "Don't have an account? ",
+                    style: TextStyle(fontSize: 16, color: Colors.black),
+                    children: [
+                      TextSpan(
+                        text: 'Sign Up',
+                        style: TextStyle(fontSize: 16, color: Colors.greenAccent[400], fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
