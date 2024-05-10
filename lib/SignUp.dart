@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -12,6 +13,16 @@ class _SignUpState extends State<SignUp> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  void _showSuccessMessage() {
+    Fluttertoast.showToast(
+      msg: "User added to Firebase successfully!",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      backgroundColor: Colors.green,
+      textColor: Colors.white,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +85,8 @@ class _SignUpState extends State<SignUp> {
                         email: email,
                         password: password,
                       );
+
+                      _showSuccessMessage();
 
                       // Additional logic after successful sign-up if needed
                     } catch (e) {

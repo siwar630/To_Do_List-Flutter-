@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_app/Home.dart';
+import 'package:flutter_app/home.dart';
+import 'package:flutter_app/tasks.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -26,7 +27,7 @@ class _SignInState extends State<SignIn> {
         if (userCredential.user != null) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => Home()),
+            MaterialPageRoute(builder: (context) => ToDoListScreen()),
           );
         }
       }
