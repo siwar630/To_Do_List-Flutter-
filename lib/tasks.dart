@@ -63,7 +63,6 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
                     ),
                   );
                 } else {
-                  // Ajoute une nouvelle tâche à la collection Firestore
                   tasksCollection
                       .add({
                     'title': title,
@@ -87,6 +86,76 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
     );
   }
 
+  void _showEditToDoListForm(BuildContext context, ToDoList todo) {
+    final TextEditingController _titleController =
+    TextEditingController(text: todo.title);
+    final TextEditingController _descriptionController =
+    TextEditingController(text: todo.description);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Modifier la tâche'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _titleController,
+                decoration: InputDecoration(labelText: 'Titre'),
+              ),
+              TextField(
+                controller: _descriptionController,
+                decoration: InputDecoration(labelText: 'Description'),
+              ),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                String title = _titleController.text;
+                String description = _descriptionController.text;
+
+                if (title.isEmpty || description.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Veuillez remplir tous les champs'),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                } else {
+                  tasksCollection
+                      .doc(todo.id)
+                      .update({
+                    'title': title,
+                    'description': description,
+                  })
+                      .then((value) {
+                    print('Tâche modifiée avec succès!');
+                    Navigator.pop(context);
+                  })
+                      .catchError((error) {
+                    print('Erreur lors de la modification de la tâche: $error');
+                  });
+                }
+              },
+              child: Text('Modifier'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _deleteToDoList(ToDoList todo) {
+    tasksCollection
+        .doc(todo.id)
+        .delete()
+        .then((value) => print('Tâche supprimée avec succès!'))
+        .catchError((error) =>
+        print('Erreur lors de la suppression de la tâche: $error'));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -96,7 +165,6 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
         backgroundColor: Colors.pink,
       ),
       body: StreamBuilder<QuerySnapshot>(
-        // Écoute les modifications de la collection Firestore
         stream: tasksCollection.snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
@@ -104,10 +172,9 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           }
 
-          // Convertit les documents Firestore en une liste de tâches
           List<ToDoList> todoList = snapshot.data!.docs
               .map((DocumentSnapshot document) {
             Map<String, dynamic>? data =
@@ -126,19 +193,34 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
                   ? TimeOfDay.fromDateTime(data['date']!.toDate())
                   : TimeOfDay.now(),
             );
-          })
-              .where((element) => element != null)
-              .toList()
-              .cast<ToDoList>();
+          }).where((element) => element != null).toList().cast<ToDoList>();
 
           return ListView.builder(
             itemCount: todoList.length,
             itemBuilder: (context, index) {
               ToDoList todo = todoList[index];
-              return ListTile(
-                title: Text(todo.title),
-                subtitle: Text(todo.description),
-                // ...
+              return Card(
+                child: ListTile(
+                  title: Text(todo.title),
+                  subtitle: Text(todo.description),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          _showEditToDoListForm(context, todo);
+                        },
+                        icon: Icon(Icons.edit),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          _deleteToDoList(todo);
+                        },
+                        icon: Icon(Icons.delete),
+                      ),
+                    ],
+                  ),
+                ),
               );
             },
           );
