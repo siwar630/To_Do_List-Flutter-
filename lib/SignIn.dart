@@ -44,6 +44,12 @@ class _SignInState extends State<SignIn> {
         backgroundColor: Colors.pink,
       ),
       body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/fleur.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
         padding: EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
