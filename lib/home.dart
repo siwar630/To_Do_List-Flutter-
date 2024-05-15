@@ -9,6 +9,14 @@ class Home extends StatelessWidget {
         title: Text('Home'),
         centerTitle: true,
         backgroundColor: Colors.pink,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () {
+              // Code pour effectuer la déconnexion
+            },
+          ),
+        ],
       ),
       body: Center(
         child: Container(

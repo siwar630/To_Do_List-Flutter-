@@ -8,6 +8,7 @@ class ToDoList {
   DateTime date;
   TimeOfDay time;
   String category;
+  bool isDone;
 
   ToDoList({
     required this.id,
@@ -16,6 +17,7 @@ class ToDoList {
     required this.date,
     required this.time,
     required this.category,
+    required this.isDone,
   });
 }
 
@@ -28,18 +30,16 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
   final CollectionReference tasksCollection =
   FirebaseFirestore.instance.collection('tasks_db');
 
-
   Color _getTaskColor(String category) {
     switch (category) {
       case 'Work':
-        return Colors.deepPurpleAccent; // Example color for the Work category
+        return Colors.deepPurpleAccent;
       case 'Personal':
-        return Colors.deepPurple.shade200; // Example color for the Personal category
+        return Colors.deepPurple.shade200;
       case 'Shopping':
-        return Colors.deepPurple.shade100; // Example color for the Shopping category
-    // Add more cases for other categories
+        return Colors.deepPurple.shade100;
       default:
-        return Colors.deepPurple.shade50; // Default color
+        return Colors.deepPurple.shade50;
     }
   }
 
@@ -373,8 +373,11 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
                   ? TimeOfDay.fromDateTime(data['date']!.toDate())
                   : TimeOfDay.now(),
               category: data['category'] ?? '',
+              isDone: false, // Provide a value for isDone
+
             );
           }).where((element) => element != null).toList().cast<ToDoList>();
+
 
           return ListView.builder(
             itemCount: todoList.length,
@@ -428,39 +431,23 @@ class _ToDoListScreenState extends State<ToDoListScreen> {
 
         },
       ),
-      bottomNavigationBar: BottomAppBar(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.home),
-              onPressed: () {
-                // Navigate to home screen
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () {
-                _showAddToDoListForm(context);
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.person),
-              onPressed: () {
-                Navigator.pushNamed(
-                  context,
-                  '/profile',
-                  arguments: {
-                    'userName': 'John Doe', // Replace with actual user name
-                    'totalTasks': 10, // Replace with actual total tasks count
+              bottomNavigationBar: BottomAppBar(
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                    SizedBox(), // Placeholder widget to maintain spacing
+                FloatingActionButton(
+                  child: Icon(Icons.add),
+                  onPressed: () {
+                    _showAddToDoListForm(context);
                   },
-                );
+                  backgroundColor: Colors.pink,
+                ),
+                SizedBox(), // Placeholder widget to maintain spacing
 
-              },
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
+      );
   }
 }
